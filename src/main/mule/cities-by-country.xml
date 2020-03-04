@@ -41,6 +41,5 @@ read(payload.body.GetCitiesByCountryResponse replace "&lt;" with "<" replace "&g
 			
 			
 		</ee:transform>
-		<logger level="INFO" doc:name="Log Cities by Country Response" doc:id="3d502281-9246-4a95-bf19-c5f7f5eba4e6" message="Log Cities by Country Response |  #[payload]"/>
 	</sub-flow>
 </mule>

@@ -32,6 +32,5 @@ ns ns0 http://www.webserviceX.NET
 read(payload.body.ns0#GetWeatherResponse replace "&lt;" with "<" replace "&gt;" with ">" replace "<![CDATA[" with "" replace "]>" with "" replace "]" with "","application/xml").NewDataSet]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Log Weather by City Response" doc:id="fbc360b9-b2e3-432a-aa8d-7d2e111aa9ae" message="Log Weather by City Response | #[payload]"/>
 	</sub-flow>
 </mule>
