@@ -12,3 +12,4 @@ webserviceconsumer:
     service: "GlobalWeather"
     port: "GlobalWeatherSoap"
     address: "http://localhost:8080/GlobalWeather"
+    #address: "URL http://www.webservicex.com/globalweather.asmx"
