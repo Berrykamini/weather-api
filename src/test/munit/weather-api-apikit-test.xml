@@ -324,7 +324,7 @@
     &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
     &amp;amp;lt;City&amp;amp;gt;Williamtown Aerodrome&amp;amp;lt;/City&amp;amp;gt;
   &amp;amp;lt;/Table&amp;amp;gt;
-&amp;amp;lt;/NewDataSet&amp;amp;gt;&lt;/GetCitiesByCountryResponse&gt;']" mediaType="application/java" />
+&amp;amp;lt;/NewDataSet&amp;amp;gt;&lt;/GetCitiesByCountryResponse&gt;']" mediaType="application/xml" />
 				</munit-tools:then-return>
 				
 			</munit-tools:mock-when>
