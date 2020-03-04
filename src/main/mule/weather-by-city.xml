@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="weather-by-city-subflow" doc:id="6c87e0d9-84d5-4c73-8f88-765573df8bd1" >
+		<logger level="INFO" doc:name="Log Weather by City Request" doc:id="aaaaf9ad-fb4e-4a13-9050-0540973c78e5" message="Log Weather by City Request | #[attributes.uriParams.cityname]" />
+		<ee:transform doc:name="Input Payload" doc:id="3c12941f-0562-4f53-a6a6-6bada6d44b74" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.webserviceX.NET
+---
+{
+	ns0#GetWeather: {
+		ns0#CityName: attributes.uriParams.cityname
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume doc:name="Invoke Web Service Consumer" doc:id="1e30dfd5-4d21-4a64-90ae-1f5aa0d3ede6" config-ref="Web_Service_Consumer_Config" operation="GetWeather" />
+		<ee:transform doc:name="Consumer Response Payload" doc:id="bb98f777-8c8e-4996-b9e7-32f032326395" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 http://www.webserviceX.NET
+
+---
+
+read(payload.body.ns0#GetWeatherResponse replace "&lt;" with "<" replace "&gt;" with ">" replace "<![CDATA[" with "" replace "]>" with "" replace "]" with "","application/xml").NewDataSet]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log Weather by City Response" doc:id="fbc360b9-b2e3-432a-aa8d-7d2e111aa9ae" message="Log Weather by City Response | #[payload]"/>
+	</sub-flow>
+</mule>

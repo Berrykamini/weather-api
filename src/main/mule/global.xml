@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	
+	<http:listener-config name="weather-api-httpListenerConfig">
+        <http:listener-connection host="${secure::main.api.host}" port="${secure::main.api.port}" />
+    </http:listener-config>
+    <apikit:config name="weather-api-config" api="weather-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="de450821-591a-4f8a-b0ff-ca34197e6b16" >
+		<wsc:connection wsdlLocation="global-weather.wsdl" service="${secure::webserviceconsumer.weather.service}" port="${secure::webserviceconsumer.weather.port}" address="${secure::webserviceconsumer.weather.address}" />
+	</wsc:config> 
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="b39a82f1-e86e-421c-9595-7752a0f55e65" file="properties\weather-api-${mule.env}-properties.yaml" key="${key}" />
+	
+</mule>

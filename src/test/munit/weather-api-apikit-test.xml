@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd http://www.mulesoft.org/schema/mule/munit-tools http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd ">
+    <munit:config name="weather-api-apikit-test.xml" />
+    <http:request-config name="HTTP_Request_Configuration" basePath="/api">
+        <http:request-connection host="localhost" port="8081" />
+    </http:request-config>
+    <munit:test name="get:\weather\city\(cityname):weather-api-config-406-application\json-FlowTest" description="Verifying functionality of [get:\weather\city\(cityname):weather-api-config-406-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="weather-api-main" />
+            <munit:enable-flow-source value="get:\weather\city\(cityname):weather-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+            <set-variable variableName="cityname" value="#['null']" doc:name="cityname" />
+        </munit:behavior>
+        <munit:execution>
+            <http:request config-ref="HTTP_Request_Configuration" method="GET" path="#['/weather/city/melbourne']">
+                <http:headers><![CDATA[#[{"Accept":"application/xml"}]]]></http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="406" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(406)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 406" />
+        </munit:validation>
+    </munit:test>
+    	 <munit:test name="get:\weather\city\(cityname):weather-api-config-405-application\json-FlowTest" description="Verifying functionality of [get:\weather\city\(cityname):weather-api-config-405-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="weather-api-main" />
+            <munit:enable-flow-source value="get:\weather\city\(cityname):weather-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+            <set-variable variableName="cityname" value="#['null']" doc:name="cityname" />
+        </munit:behavior>
+        <munit:execution>
+            <http:request config-ref="HTTP_Request_Configuration" method="PATCH" path="#['/weather/city/melbourne']">
+                <http:headers><![CDATA[#[{"Accept":"application/xml"}]]]></http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="405" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(405)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 405" />
+        </munit:validation>
+    </munit:test>
+    <munit:test name="get:\city\(countryName):weather-api-config-200-application\json-FlowTest" description="Verifying functionality of [get:\city\(countryName):weather-api-config-200-application\json]" ignore="true">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="weather-api-main" />
+            <munit:enable-flow-source value="get:\city\(countryName):weather-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+            <set-variable variableName="countryName" value="#['Australia']" doc:name="countryName" />
+			<munit-tools:mock-when doc:name="Mock when" doc:id="7c6d2774-8d7c-4b47-b1a1-db5acc93b9d1" processor="wsc:consume">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="GetCitiesByCountry" attributeName="operation" />
+					<munit-tools:with-attribute whereValue="Invoke Web Service Consumer" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="315d516d-0c76-4a31-97ad-d42451c473c8" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Web_Service_Consumer_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#['&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;GetCitiesByCountryResponse xmlns=&quot;http://www.webserviceX.NET&quot; xmlns:tm=&quot;http://microsoft.com/wsdl/mime/textMatching/&quot; xmlns:tns=&quot;http://www.webserviceX.NET&quot;&gt;&amp;amp;lt;NewDataSet&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Archerfield Aerodrome&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Amberley Aerodrome&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Alice Springs Aerodrome&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Brisbane Airport M. O&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Coolangatta Airport Aws&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Cairns Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Charleville Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Gladstone&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Longreach Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Mount Isa Amo&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Mackay Mo&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Oakey Aerodrome&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Proserpine Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Rockhampton Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Broome Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Townsville Amo&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Weipa City&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Gove Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Tennant Creek Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Yulara Aws&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Albury Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Devonport East&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Goldstream Aws&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;East Sale Aerodrome&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Hobart Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Launceston Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Laverton Aerodrome&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Moorabbin Airport Aws&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Mount Gambier Aerodrome&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Mildura Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Melbourne Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Macquarie Island&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Wynyard West&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Adelaide Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Albany Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Broken Hill Patton Street&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Ceduna Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Derby&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Darwin Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Bullsbrook Pearce Amo&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Edinburgh M. O.&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Forrest Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Geraldton Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Kalgoorlie Boulder Amo&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Kununurra Kununurra Aws&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Leigh Creek Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Learmonth Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Meekatharra Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Port Hedland Pardoo&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Parafield Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Belmont Perth Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Katherine Aerodrome&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Woomera Aerodrome&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Bankstown Airport Aws&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Canberra&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Coffs Harbour Mo&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Cooma&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Camden Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Dubbo&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Norfolk Island Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Nowra Ran Air Station&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Richmond Aus-Afb&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Sydney Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Tamworth Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Wagga Airport&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+  &amp;amp;lt;Table&amp;amp;gt;
+    &amp;amp;lt;Country&amp;amp;gt;Australia&amp;amp;lt;/Country&amp;amp;gt;
+    &amp;amp;lt;City&amp;amp;gt;Williamtown Aerodrome&amp;amp;lt;/City&amp;amp;gt;
+  &amp;amp;lt;/Table&amp;amp;gt;
+&amp;amp;lt;/NewDataSet&amp;amp;gt;&lt;/GetCitiesByCountryResponse&gt;']" mediaType="application/java" />
+				</munit-tools:then-return>
+				
+			</munit-tools:mock-when>
+        </munit:behavior>
+        <munit:execution>
+            <http:request config-ref="HTTP_Request_Configuration" method="GET" path="#['/city/$(vars.countryName)']">
+                <http:headers>#[{"Accept":"application/json"}]</http:headers>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+			<munit-tools:assert-that doc:name="Assert That Status Code is 200" doc:id="44474ac3-fe45-480d-a302-ef19357350a2" message="The HTTP Status code is not correct!" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(200)]" />
+			<munit-tools:verify-call doc:name="Verify 1 Call Consumer" doc:id="e2a52064-eac6-42a6-9e1c-cba5eead48b5" processor="wsc:consume" times="1" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="GetCitiesByCountry" attributeName="operation" />
+					<munit-tools:with-attribute whereValue="Invoke Web Service Consumer" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="315d516d-0c76-4a31-97ad-d42451c473c8" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Web_Service_Consumer_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+        </munit:validation>
+    </munit:test>
+    <munit:test name="get:\city\(countryName):weather-api-config-404-application\json-FlowTest" description="Verifying functionality of [get:\city\(countryName):weather-api-config-404-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="weather-api-main" />
+            <munit:enable-flow-source value="get:\city\(countryName):weather-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+            <set-variable variableName="countryName" value="#['null']" doc:name="countryName" />
+        </munit:behavior>
+        <munit:execution>
+            <http:request config-ref="HTTP_Request_Configuration" method="GET" path="#['/cit']">
+                <http:headers><![CDATA[#[{"Accept":"application/json"}]]]></http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="404" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(404)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 404" />
+        </munit:validation>
+    </munit:test>
+    <munit:test name="get:\weather:weather-api-config-400-application\json-FlowTest" description="Verifying functionality of [get:\weather:weather-api-config-400-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="weather-api-main" />
+            <munit:enable-flow-source value="get:\weather:weather-api-config" />
+        </munit:enable-flow-sources>
+        <munit:execution>
+            <http:request config-ref="HTTP_Request_Configuration" method="GET" path="/weather">
+                <http:headers>#[{"Accept":"application/json"}]</http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="400" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(400)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 400" />
+        </munit:validation>
+    </munit:test>
+    <munit:test name="get:\weather\city:weather-api-config-400-application\json-FlowTest" description="Verifying functionality of [get:\weather\city:weather-api-config-400-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="weather-api-main" />
+            <munit:enable-flow-source value="get:\weather\city:weather-api-config" />
+        </munit:enable-flow-sources>
+        <munit:execution>
+            <http:request config-ref="HTTP_Request_Configuration" method="GET" path="/weather/city">
+                <http:headers>#[{"Accept":"application/json"}]</http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="400" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(400)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 400" />
+        </munit:validation>
+    </munit:test>
+    <munit:test name="get:\weather\city\(cityname):weather-api-config-500-application\json-FlowTest" description="Verifying functionality of [get:\weather\city\(cityname):weather-api-config-500-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="weather-api-main" />
+            <munit:enable-flow-source value="get:\weather\city\(cityname):weather-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+            <set-variable variableName="cityname" value="#['mel']" doc:name="cityname" />
+			<munit-tools:mock-when doc:name="Mock when" doc:id="d108f54f-d12c-47e2-b3d3-55ce45134868" processor="wsc:consume">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Invoke Web Service Consumer" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="1e30dfd5-4d21-4a64-90ae-1f5aa0d3ede6" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Web_Service_Consumer_Config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="GetWeather" attributeName="operation" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+        </munit:behavior>
+        <munit:execution>
+            <http:request config-ref="HTTP_Request_Configuration" method="GET" path="#['/weather/city/melbourne']">
+                <http:headers><![CDATA[#[{"Accept":"application/json"}]]]></http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="500" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(500)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 500" />
+        </munit:validation>
+    </munit:test>
+    
+     <munit:test name="get:\city\(countryName):weather-api-config-500-application\json-FlowTest" description="Verifying functionality of [get:\city\(countryName):weather-api-config-500-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="weather-api-main" />
+            <munit:enable-flow-source value="get:\city\(countryName):weather-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+            <set-variable variableName="countryName" value="#['null']" doc:name="countryName" />
+			<munit-tools:mock-when doc:name="Mock when" doc:id="7d782bb5-d80b-4d57-921b-b94dfaab2ea4" processor="wsc:consume">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="GetCitiesByCountry" attributeName="operation" />
+					<munit-tools:with-attribute whereValue="Invoke Web Service Consumer" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="315d516d-0c76-4a31-97ad-d42451c473c8" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Web_Service_Consumer_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="WSC:SOAP_FAULT" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+        </munit:behavior>
+        <munit:execution>
+            <http:request config-ref="HTTP_Request_Configuration" method="GET" path="#['/city/australia']">
+                <http:headers><![CDATA[#[{"Accept":"application/json"}]]]></http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="500" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(500)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 500" />
+        </munit:validation>
+    </munit:test>
+	<munit:test name="get:\weather\city\(cityname):weather-api-config-200-application\json-FlowTest" description="Verifying functionality of [get:\weather\city\(cityname):weather-api-config-200-application\json]" ignore="true">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="weather-api-main" />
+            <munit:enable-flow-source value="get:\weather\city\(cityname):weather-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+            <set-variable variableName="cityname" value="#['null']" doc:name="cityname" />
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e5539503-5576-4323-be04-c6570681ce56" processor="wsc:consume">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="Invoke Web Service Consumer" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="1e30dfd5-4d21-4a64-90ae-1f5aa0d3ede6" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Web_Service_Consumer_Config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="GetWeather" attributeName="operation" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#['&lt;soap:Envelope xmlns:soap=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot; xmlns:tm=&quot;http://microsoft.com/wsdl/mime/textMatching/&quot; xmlns:tns=&quot;http://www.webserviceX.NET&quot;&gt;
+   &lt;soap:Body&gt;
+      &lt;GetWeatherResponse xmlns=&quot;http://www.webserviceX.NET&quot;&gt;&lt;![CDATA[&lt;![CDATA[&amp;lt;NewDataSet&amp;gt;
+    &amp;lt;Location&amp;gt;Melbourne&amp;lt;/Location&amp;gt;
+    &amp;lt;Time&amp;gt;11 AM&amp;lt;/Time&amp;gt;
+    &amp;lt;Wind&amp;gt;15 km per hour&amp;lt;/Wind&amp;gt;
+    &amp;lt;Visibility&amp;gt;10 km&amp;lt;/Visibility&amp;gt;
+    &amp;lt;SkyConditions&amp;gt;sunny&amp;lt;/SkyConditions&amp;gt;
+    &amp;lt;Temperature&amp;gt;18&amp;lt;/Temperature&amp;gt;
+    &amp;lt;DewPoint&amp;gt;2 C&amp;lt;/DewPoint&amp;gt;
+    &amp;lt;RelativeHumidity&amp;gt;35&amp;lt;/RelativeHumidity&amp;gt;
+    &amp;lt;Status&amp;gt;Normal&amp;lt;/Status&amp;gt;
+&amp;lt;/NewDataSet&amp;gt;]]]]&gt;&gt;&lt;![CDATA[]]&gt;&lt;/GetWeatherResponse&gt;
+   &lt;/soap:Body&gt;
+&lt;/soap:Envelope&gt;']" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+        </munit:behavior>
+        <munit:execution>
+            <http:request config-ref="HTTP_Request_Configuration" method="GET" path="#['/weather/cit']">
+                <http:headers><![CDATA[#[{"Accept":"application/json"}]]]></http:headers>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(200)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 200" />
+        </munit:validation>
+    </munit:test>
+	<munit:test name="get:\weather\city\(cityname):weather-api-config-404-application\json-FlowTest" description="Verifying functionality of [get:\weather\city\(cityname):weather-api-config-404-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="weather-api-main" />
+            <munit:enable-flow-source value="get:\weather\city\(cityname):weather-api-config" />
+        </munit:enable-flow-sources>
+        <munit:behavior>
+            <set-variable variableName="cityname" value="#['null']" doc:name="cityname" />
+        </munit:behavior>
+        <munit:execution>
+            <http:request config-ref="HTTP_Request_Configuration" method="GET" path="#['/weather/cit']">
+                <http:headers><![CDATA[#[{"Accept":"application/json"}]]]></http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="404" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(404)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 404" />
+        </munit:validation>
+    </munit:test>
+	<munit:test name="get:\city:weather-api-config-400-application\json-FlowTest" description="Verifying functionality of [get:\city:weather-api-config-400-application\json]">
+        <munit:enable-flow-sources>
+            <munit:enable-flow-source value="weather-api-main" />
+            <munit:enable-flow-source value="get:\city:weather-api-config" />
+        </munit:enable-flow-sources>
+        <munit:execution>
+            <http:request config-ref="HTTP_Request_Configuration" method="GET" path="/city">
+                <http:headers>#[{"Accept":"application/json"}]</http:headers>
+                <http:response-validator>
+                    <http:success-status-code-validator values="400" />
+                </http:response-validator>
+            </http:request>
+        </munit:execution>
+        <munit:validation>
+            <munit-tools:assert-that expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(400)]" message="The HTTP Status code is not correct!" doc:name="Assert That Status Code is 400" />
+        </munit:validation>
+    </munit:test>
+</mule>

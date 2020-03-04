@@ -1,0 +1,15 @@
+#HTTP Configuration     
+main:
+  api:
+    host: "0.0.0.0"
+    port: "8081"
+    path: "v1"
+    
+#Configuration
+
+webserviceconsumer:
+  weather:
+    service: "GlobalWeather"
+    port: "GlobalWeatherSoap"
+    address: "http://localhost:8080/GlobalWeather"
+    

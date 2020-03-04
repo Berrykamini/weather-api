@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	 
+	<sub-flow name="cities-by-country-subflow" doc:id="395e4b09-2c80-4aad-aa92-1f9e6698dd9e" >
+		<logger level="INFO" doc:name="Log Cities by Country Request" doc:id="db134af9-e7cb-4af4-bb1d-1ceb7b429ad4" message="Log Cities by Country Request | #[attributes.uriParams.countryName]"/>
+		<ee:transform doc:name="Input XML Payload" doc:id="49d5ff4c-81b4-4779-a09c-4409c11b96f5">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.webserviceX.NET
+---
+{
+	ns0#GetCitiesByCountry: {
+		ns0#CountryName: attributes.uriParams.countryName
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume operation="GetCitiesByCountry" doc:name="Invoke Web Service Consumer" doc:id="315d516d-0c76-4a31-97ad-d42451c473c8" config-ref="Web_Service_Consumer_Config" />
+		<ee:transform doc:name="Consumer Response Payload" doc:id="cd560ccf-ffe0-4c4f-8ab9-8449c7d8fdaf">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+
+output application/json
+
+---
+
+read(payload.body.GetCitiesByCountryResponse replace "&lt;" with "<" replace "&gt;" with ">","application/xml").NewDataSet.*Table map  
+	
+	{
+		Country: $.Country,
+		City: $.City
+	}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables />
+			
+			
+		</ee:transform>
+		<logger level="INFO" doc:name="Log Cities by Country Response" doc:id="3d502281-9246-4a95-bf19-c5f7f5eba4e6" message="Log Cities by Country Response |  #[payload]"/>
+	</sub-flow>
+</mule>
